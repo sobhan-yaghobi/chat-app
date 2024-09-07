@@ -96,28 +96,33 @@ export const getConversationsList = async (req: Request, res: Response) => {
 
     if (!authUserId) return res.status(404).json({ status: "fail", message: "User id not found" })
 
-    // const users = await prisma.user.findMany({
-    //   where: {
-    //     id: {
-    //       not: authUserId,
-    //     },
-    //   },
-    //   select: {
-    //     id: true,
-    //     fullName: true,
-    //     profilePic: true,
-    //   },
-    // })
-
-    // return res.status(201).json({ status: "success", users })
-
     const conversations = await prisma.conversation.findMany({
+      where: {
+        participantIds: {
+          has: authUserId,
+        },
+      },
       include: {
-        participants: true, // Include participants if needed
-        messages: true, // Include messages if needed
+        participants: {
+          where: {
+            id: {
+              not: authUserId,
+            },
+          },
+          select: {
+            id: true,
+            username: true,
+            fullName: true,
+            profilePic: true,
+          },
+        },
+        messages: {
+          take: -1,
+        },
       },
     })
-    return res.status(201).json({ status: "success", username: req.user.username, conversations })
+
+    return res.status(201).json({ status: "success", conversations })
   } catch (error) {
     return handleError(res, error)
   }

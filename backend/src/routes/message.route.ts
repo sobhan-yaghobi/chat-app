@@ -9,8 +9,12 @@ import {
 
 const router = express.Router()
 
-// router.get("/:id", protectRoute, getMessages)
-// router.post("/send/:id", protectRoute, sendMessage)
-// router.get("/users", protectRoute, getUserList)
 router.get("/conversations", protectRoute, getConversationsList)
+
+router.post("/send/:id", protectRoute, sendMessage)
+
+router.get("/users", protectRoute, getUserList)
+
+router.get("/:id", protectRoute, getMessages)
+
 export default router

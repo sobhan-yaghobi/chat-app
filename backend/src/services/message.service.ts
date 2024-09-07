@@ -28,11 +28,26 @@ export const updateConversationMessages = async (conversationId: string, newMess
     },
   })
 
+// export const createNewConversation = async (senderId: string, receiverId: string) =>
+//   await prisma.conversation.create({
+//     data: {
+//       participantIds: {
+//         set: [senderId, receiverId],
+//       },
+//     },
+//   })
+
 export const createNewConversation = async (senderId: string, receiverId: string) =>
   await prisma.conversation.create({
     data: {
       participantIds: {
-        set: [senderId, receiverId],
+        set: [senderId, receiverId], // Update participantIds
+      },
+      participants: {
+        connect: [
+          { id: senderId }, // Connect sender to participants
+          { id: receiverId }, // Connect receiver to participants
+        ],
       },
     },
   })
